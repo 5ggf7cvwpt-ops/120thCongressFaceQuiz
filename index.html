@@ -29,7 +29,12 @@ h2{font:600 17px/1.2 var(--display);margin:0}
 .top{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .pill{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px 10px;white-space:nowrap}
 .pill b{color:var(--ink)}
+.pill:empty{display:none}
 .topr{display:flex;gap:8px;align-items:center}
+.a2hs{display:flex;gap:10px;align-items:flex-start;background:var(--raise);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:14px;line-height:1.35}
+.a2hs svg{flex:none;width:18px;height:18px;color:var(--accent);margin-top:1px}
+.a2hs p{margin:0;flex:1}
+.a2hs button{flex:none;background:none;border:0;color:var(--muted);font-size:18px;line-height:1;padding:2px 4px}
 .icon{width:36px;height:36px;border-radius:999px;border:1px solid var(--line);background:var(--card);display:grid;place-items:center;padding:0;color:var(--ink)}
 .icon svg{width:18px;height:18px}
 .icon[aria-pressed="false"]{color:var(--muted)}
@@ -103,7 +108,12 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
 
  <section class="card" id="setup">
-  <p class="small">Keyboard: press 1–4 to answer, Enter for the next question. 124 House newcomers from the 120th New Member Orientation sheet, as of Nov. 7, 2026.</p>
+  <div class="a2hs" id="a2hs" hidden>
+   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m8 7 4-4 4 4"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>
+   <p><b>Add to Home Screen:</b> tap the Share button in Safari, then <b>Add to Home Screen</b>, to open the quiz like an app.</p>
+   <button type="button" id="a2hsx" aria-label="Dismiss">×</button>
+  </div>
+  <p class="small"><span id="kbhint">Keyboard: press 1–4 to answer, Enter for the next question. </span>124 House newcomers from the 120th New Member Orientation sheet, as of Nov. 7, 2026.</p>
   <div class="group"><h2>Question style</h2><div class="chips">
    <label class="chip"><input type="radio" name="mode" value="face" checked><span>Face → name</span></label>
    <label class="chip"><input type="radio" name="mode" value="name"><span>Name → face</span></label>
@@ -178,6 +188,13 @@ function safeStart(e){ if(e&&e.type==="touchend")e.preventDefault(); if(starting
 $("start").addEventListener("click",safeStart);
 $("start").addEventListener("touchend",safeStart);
 $("start").disabled=false;$("start").textContent="Start";$("jsnote").hidden=true;
+try{
+ const ios=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+ const installed=window.navigator.standalone===true||(window.matchMedia&&window.matchMedia("(display-mode: standalone)").matches);
+ if(ios&&!installed&&store("cqm_a2hs")!=="hide")$("a2hs").hidden=false;
+ if(ios)$("kbhint").hidden=true;
+ $("a2hsx").addEventListener("click",()=>{$("a2hs").hidden=true;store("cqm_a2hs","hide");});
+}catch(e){}
 
 
 /* ---- quiz ---- */
